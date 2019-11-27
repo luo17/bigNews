@@ -73,6 +73,7 @@
         e.preventDefault();
         var userName = $('.input_txt').val().trim();
         var userPwd = $('.input_pass').val().trim();
+          // 3.非空判断
         if (userName == '' || userPwd == '') {
           $('.modal-body').text('亲，用户名和密码不能为空哦');
           $('#myModal').modal();
@@ -87,6 +88,7 @@
         //   alert('宝贝密码不能为空哦');
         //   return;
         // } 
+         // 4.使用Ajax请求数据，页面渲染
         $.ajax({
           type: 'post',
           // url: 'http://localhost:8080/api/v1/admin/user/login',
@@ -100,14 +102,12 @@
             $('#myModal').modal();
             // console.log(res);
             if (res.code == 200) {
+              // 我们登录成功之后  把token令牌存储到本地 然后在使用的时候 将这个令牌拿出来给服务器看 这个令牌就是用来鉴别我们是否有登录
+              localStorage.setItem('token',res.token)
               $('#myModal').on('hidden.bs.modal', function (e) {
                 window.location.href = './index.html';
-              })
+              })  
             }
-            // } else {
-            //   $('.modal-body').text(res.msg);
-            //   $('#myModal').modal();
-            // }
             //判断用户名或者密码是否正确
 
             // 当我们登录成功之后，我们需要将token令牌存储到本地，然后在使用其他的页面的时候，将这个令牌拿出来给别人看，这个令牌就是用来鉴别我们是否有登录
@@ -126,8 +126,8 @@
       })
 
 
-      // 3.非空判断
-      // 4.使用Ajax请求数据，页面渲染
+    
+     
     })
 
   </script>

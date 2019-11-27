@@ -54,5 +54,32 @@
 
         </div>
     </div>
+    <script src="./libs/http.js"></script>
+    <script>
+        // 当从登录页面登录成功知还跳转到index页面那么index页面立即发送Ajax请求获取到用户信息将用户的名字和头像填充到页面对应的部分
+        $(function(){
+            $.ajax({
+                type:'get',
+                url:'http://localhost:8080/api/v1/admin/user/info',
+                // 将jQuery的Ajax中设置请求头
+                // 用headers 获取请求头 
+                // 我们在后期去访问任何一个接口都需要带上token值我们每次请求接口发送Ajax请求的时候都需要设置这样的headers 
+                // 在jQuery中设置一个方法 每次发送Ajax请求的时候都为我们发送一次请求头        在jQuery加入了这个方法 在最后可以查看
+                // headers:{
+                //     Authorization : window.localStorage.getItem('token')
+                // },
+                success:function(res){
+                //   console.log(res);
+                // 获取到返回的用户信息在页面渲染
+                $('.user_info>img').attr('src', res.data.userPic);
+                $('.user_info>span').html('欢迎&nbsp;&nbsp'+res.data.nickname);
+                $('.user_center_link>img').attr('src',res.data.userPic);
+                }
+            })
+
+        })
+    </script>
+
 </body>
+
 </html>
