@@ -77,6 +77,18 @@
                 }
             })
 
+            // 点击退出 返回到登录页面
+                // 退出的实现逻辑 
+                // 点击退出返回登录页面  并且删掉token删掉
+                // 先获取这个按钮注册事件
+                $('.logout').on('click',function(){
+                // 点击按钮删掉token事件
+                    window.localStorage.removeItem('token');
+                // 返回登录页面
+                    window.location.href='./login.html';
+                
+
+            })
         })
     </script>
 
