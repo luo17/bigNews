@@ -51,7 +51,7 @@
                         <label for="exampleInputFile">
                             <img src="./images/uploads_icon.jpg" style="height: 50px;" alt="">
                         </label>
-                         <!-- <label for="exampleInputFile">
+                        <!-- <label for="exampleInputFile">
                             <img src="./images/uploads_icon.jpg" style="height: 50px;" alt="">
                         </label> -->
                     </div>
@@ -74,42 +74,91 @@
     </div>
     <script src="./libs/http.js"></script>
     <script>
-    $(function(){
-        // 当用户点击跳转到用户页面的时候 就会获取到用户的信息 填充到表单中
-        $.get({
-            url:BigNew.user_detail,
-            success:function(res){
-                // console.log(res);
-                // 当数据获取成功之后 渲染到页面
-                if(res.code==200){
-                    // $('input.username').val(res.data.username);
-                    // $('input.nickname').val(res.data.nickname);
-                    // $('input.email').val(res.data.email);
-                    // $('input.password').val(res.data.password);
-                    for(var arr in res.data){
-                        $('input.'+arr).val(res.data[arr]);
+        $(function () {
+            // 当用户点击跳转到用户页面的时候 就会获取到用户的信息 填充到表单中
+            $.get({
+                url: BigNew.user_detail,
+                success: function (res) {
+                    // console.log(res);
+                    // 当数据获取成功之后 渲染到页面
+                    if (res.code == 200) {
+                        // $('input.username').val(res.data.username);
+                        // $('input.nickname').val(res.data.nickname);
+                        // $('input.email').val(res.data.email);
+                        // $('input.password').val(res.data.password);
+                        for (var arr in res.data) {
+                            $('input.' + arr).val(res.data[arr]);
+                        }
+                        $('.user_pic').attr('src', res.data.userPic);
                     }
-                    $('.user_pic').attr('src',res.data.userPic);
                 }
-            }
-        })
-        // 给文件域注册一个change事件 当选好图片之后 在页面显示预览效果
-        $('#exampleInputFile').on('change',function(){
-            // files【0】获取图片信息
-            // console.log(this.files[0]);
-            var imgIcon = this.files[0];
-            // window上有一个url对象 在这个对象中有一个createObjectURL能将图片的信息转换为url地址
-            var url = URL.createObjectURL(imgIcon);
-            // console.log(url);
-            // 将这个地址设置给img的src属性
-            $('.user_pic').attr('src',url);
+            })
+            // 给文件域注册一个change事件 当选好图片之后 在页面显示预览效果
+            $('#exampleInputFile').on('change', function () {
+                // files【0】获取图片信息
+                // console.log(this.files[0]);
+                var imgIcon = this.files[0];
+                // window上有一个url对象 在这个对象中有一个createObjectURL能将图片的信息转换为url地址
+                var url = URL.createObjectURL(imgIcon);
+                // console.log(url);
+                // 将这个地址设置给img的src属性
+                $('.user_pic').attr('src', url);
+
+            })
+            // 注册修改按钮的点击事件
+            $('button.btn-edit').on('click', function (e) {
+                // 阻止默认行为
+                e.preventDefault();
+                // 获取表单信息
+                // 获取form表单 formData只能处理原生的DOM对象
+                var form = $('#form')[0];
+                var userData = new FormData(form)
+                // 发送Ajax请求
+                $.post({
+                    url: BigNew.user_edit,
+                    data: userData,
+                    // 不需要设置请求类型
+                    contentType: false,
+                    // 不需要进行编码
+                    processData: false,
+                    success: function (res) {
+                        if (res.code == 200) {
+                            // // 刷新子页面
+                            // window.location.reload();
+                            // // 在子页面刷新父页面
+                            // parent.window.location.reload();
+                            $.ajax({
+                                type: 'get',
+                                url: window.BigNew.user_info,
+                                // 将jQuery的Ajax中设置请求头
+                                // 用headers 获取请求头 
+                                // 我们在后期去访问任何一个接口都需要带上token值我们每次请求接口发送Ajax请求的时候都需要设置这样的headers 
+                                // 在jQuery中设置一个方法 每次发送Ajax请求的时候都为我们发送一次请求头        在jQuery加入了这个方法 在最后可以查看
+                                // headers:{
+                                //     Authorization : window.localStorage.getItem('token')
+                                // },
+                                success: function (res) {
+                                    //   console.log(res);
+                                    // 获取到返回的用户信息在页面渲染
+                                    // parent 在子页面获取到父页面的元素
+                                    parent.$('.user_info>img').attr('src', res.data.userPic);
+                                    parent.$('.user_info>span').html('欢迎&nbsp;&nbsp' + res.data.nickname);
+                                    parent.$('.user_center_link>img').attr('src', res.data.userPic);
+                                    // 在获取之后刷新子页面
+                                    window.location.reload();
+                                }
+                            })
+                        }
+                    }
+                })
+            })
             
+        
+        
         })
 
-    })
-    
-    
-    
+
+
     </script>
 </body>
 
