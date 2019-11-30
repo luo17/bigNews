@@ -44,7 +44,7 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
                         <img src="images/2.jpg" alt="" class="user_pic">
-                        <input style="display: block" name="userPic" type="file" id="exampleInputFile">
+                        <input style="display: none" name="userPic" type="file" id="exampleInputFile">
                         <!-- 给label标签的for属性赋值,值是input标签的id,那这样的话点击label就相当于点击了input -->
                         <br>
                         <label for="exampleInputFile">
@@ -68,6 +68,45 @@
             </form>
         </div>
     </div>
+    <script src="./libs/http.js"></script>
+    <script>
+    $(function(){
+        // 当用户点击跳转到用户页面的时候 就会获取到用户的信息 填充到表单中
+        $.get({
+            url:BigNew.user_detail,
+            success:function(res){
+                // console.log(res);
+                // 当数据获取成功之后 渲染到页面
+                if(res.code==200){
+                    // $('input.username').val(res.data.username);
+                    // $('input.nickname').val(res.data.nickname);
+                    // $('input.email').val(res.data.email);
+                    // $('input.password').val(res.data.password);
+                    for(var arr in res.data){
+                        $('input.'+arr).val(res.data[arr]);
+                    }
+                    $('.user_pic').attr('src',res.data.userPic);
+                }
+            }
+        })
+        // 给文件域注册一个change事件 当选好图片之后 在页面显示预览效果
+        $('#exampleInputFile').on('change',function(){
+            // files【0】获取图片信息
+            // console.log(this.files[0]);
+            var imgIcon = this.files[0];
+            // window上有一个url对象 在这个对象中有一个createObjectURL能将图片的信息转换为url地址
+            var url = URL.createObjectURL(imgIcon);
+            // console.log(url);
+            // 将这个地址设置给img的src属性
+            $('.user_pic').attr('src',url);
+            
+        })
+
+    })
+    
+    
+    
+    </script>
 </body>
 
 </html>
